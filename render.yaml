@@ -1,0 +1,51 @@
+# PLAN-Z demonstration stack on Render. Both services are free tiers.
+# MongoDB Atlas is external: fill MONGO_URI privately when importing Blueprint.
+# Deploy the portfolio-render-deploy branch until the PR is reviewed and merged.
+services:
+  - type: web
+    name: planz-portfolio-api
+    runtime: node
+    plan: free
+    region: singapore
+    branch: portfolio-render-deploy
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /healthz
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGO_URI
+        sync: false
+      - key: CLIENT_ORIGIN
+        fromService:
+          name: planz-portfolio-web
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+
+  - type: web
+    name: planz-portfolio-web
+    runtime: static
+    branch: portfolio-render-deploy
+    rootDir: client
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      # Render supplies its real assigned HTTPS hostname; no hard-coded URL.
+      - key: VITE_API_ORIGIN
+        fromService:
+          name: planz-portfolio-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

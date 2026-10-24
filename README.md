@@ -27,14 +27,22 @@ JWT_SECRET=replace-with-a-long-random-secret
 PORT=5000
 ```
 
-Run `npm run dev` in `server/` and `client/`. The frontend code expects the backend at `http://localhost:5000/api`. The app has not been independently confirmed deployment-ready.
+Run `npm run dev` in `server/` and `client/`. The frontend uses `VITE_API_URL` from `client/.env` (defaults to `http://localhost:5000/api` for local development). Copy the sample environment files from `client/.env.example` and `server/.env.example` before starting.
 
 ## Important notes
 
 - This portfolio upload excludes `node_modules` and locally generated files. Install packages as described above.
-- **The original `client/src/assets/hero.png` image must still be restored** from the prepared ZIP or the authorized source. Its absence may affect the frontend build or visuals.
+- The missing historical `hero.png` asset is not currently referenced by the checked-in frontend source. A clean production build is still required to confirm readiness.
 - Do not use development fallback JWT secrets in production.
 - Payment functionality is mocked.
+
+## Live portfolio demonstration
+
+**[Open the PLAN-Z demo](https://planz-portfolio-web.onrender.com/)** · **[API health check](https://planz-portfolio-api.onrender.com/healthz)**
+
+The React frontend and Node/Express API are deployed on Render, backed by MongoDB Atlas. The owner has confirmed the PLAN-Z website works and the API health endpoint reports `{"status":"ok"}`. The public hosting configuration lives in [`render.yaml`](render.yaml), with [deployment and security instructions](DEPLOYMENT.md).
+
+**Portfolio/demo only:** Payments are simulated; no money is charged. The free backend can sleep after inactivity. Demo records must be fictitious. End-to-end testing of all roles, administrative approvals and bookings, plus credential rotation and restricted Atlas IP access, should be completed before promoting this beyond a student portfolio.
 
 ## Credit and provenance
 

@@ -3,6 +3,8 @@ const cors = require("cors");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
+const mongoose = require("mongoose");
+const { getJwtSecret } = require("./utils/jwtSecret");
 
 // Route imports
 const authRoutes = require("./routes/authRoutes");
@@ -18,15 +20,34 @@ const paymentRoutes = require("./routes/paymentRoutes");
 const app = express();
 
 // ─── Connect to MongoDB ───────────────────────────────────────────────────────
-connectDB();
+// Database connection is established before accepting traffic.
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
+// Only explicitly configured browser origins may access the API.
+// The frontend uses Bearer tokens, not cross-site cookies.
+const allowedOrigins = new Set(
+  (process.env.CLIENT_ORIGIN || 'http://localhost:5173,http://127.0.0.1:5173')
+    .split(',')
+    .map((origin) => origin.trim().replace(/\/$/, ''))
+    .filter(Boolean)
+);
+
+app.disable('x-powered-by');
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+    return callback(null, false);
+  },
+}));
+app.use(express.json({ limit: '100kb' }));
 
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get("/", (req, res) => {
   res.json({ message: "PLAN-Z API running", status: "ok" });
+});
+app.get("/healthz", (req, res) => {
+  const connected = mongoose.connection.readyState === 1;
+  res.status(connected ? 200 : 503).json({ status: connected ? "ok" : "database_unavailable" });
 });
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
@@ -42,6 +63,21 @@ app.use("/api/payments", paymentRoutes);
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+
+async function start() {
+  if (process.env.NODE_ENV === 'production') {
+    if (!process.env.CLIENT_ORIGIN) throw new Error('CLIENT_ORIGIN must be configured in production');
+    // Fail early if the mandatory production signing secret is absent.
+    getJwtSecret();
+  }
+  if (!process.env.MONGO_URI) throw new Error('MONGO_URI is required');
+  await connectDB();
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+start().catch((error) => {
+  console.error('PLAN-Z startup failed:', error.message);
+  process.exit(1);
 });
