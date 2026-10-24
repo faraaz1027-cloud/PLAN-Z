@@ -27,14 +27,18 @@ JWT_SECRET=replace-with-a-long-random-secret
 PORT=5000
 ```
 
-Run `npm run dev` in `server/` and `client/`. The frontend code expects the backend at `http://localhost:5000/api`. The app has not been independently confirmed deployment-ready.
+Run `npm run dev` in `server/` and `client/`. The frontend uses `VITE_API_URL` from `client/.env` (defaults to `http://localhost:5000/api` for local development). Copy the sample environment files from `client/.env.example` and `server/.env.example` before starting.
 
 ## Important notes
 
 - This portfolio upload excludes `node_modules` and locally generated files. Install packages as described above.
-- **The original `client/src/assets/hero.png` image must still be restored** from the prepared ZIP or the authorized source. Its absence may affect the frontend build or visuals.
+- The missing historical `hero.png` asset is not currently referenced by the checked-in frontend source. A clean production build is still required to confirm readiness.
 - Do not use development fallback JWT secrets in production.
 - Payment functionality is mocked.
+
+## Free live demo deployment (in progress)
+
+**[Render + Atlas deployment guide](DEPLOYMENT.md)** — instructions for the free MongoDB Atlas database, Render Express API, and Render React static site. The `portfolio-render-deploy` branch contains preliminary hosting fixes and has **not yet** passed a complete live end-to-end test. No Live Demo URL is claimed until the frontend, database, signup, organizer approval, booking, and mock payment flows are verified.
 
 ## Credit and provenance
 
