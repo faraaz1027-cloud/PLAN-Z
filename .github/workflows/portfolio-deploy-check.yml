@@ -1,0 +1,38 @@
+name: PLAN-Z portfolio deploy checks
+
+on:
+  push:
+    branches:
+      - portfolio-render-deploy
+  pull_request:
+    paths:
+      - 'client/**'
+      - 'server/**'
+      - '.github/workflows/portfolio-deploy-check.yml'
+
+jobs:
+  build-and-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Install React frontend dependencies
+        run: npm ci
+        working-directory: client
+      - name: Build React frontend
+        run: npm run build
+        working-directory: client
+      - name: Install Express API dependencies
+        run: npm ci
+        working-directory: server
+      - name: Check Express source syntax
+        run: |
+          node --check server.js
+          node --check controllers/authController.js
+          node --check controllers/bookingController.js
+          node --check middleware/authMiddleware.js
+        working-directory: server
