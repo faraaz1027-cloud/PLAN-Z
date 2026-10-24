@@ -38,7 +38,7 @@ Run `npm run dev` in `server/` and `client/`. The frontend uses `VITE_API_URL` f
 
 ## Free live demo deployment (in progress)
 
-**[Render + Atlas deployment guide](DEPLOYMENT.md)** — instructions for the free MongoDB Atlas database, Render Express API, and Render React static site. The `portfolio-render-deploy` branch contains preliminary hosting fixes and has **not yet** passed a complete live end-to-end test. No Live Demo URL is claimed until the frontend, database, signup, organizer approval, booking, and mock payment flows are verified.
+**[Render + Atlas deployment guide](DEPLOYMENT.md)** and **[Render Blueprint](render.yaml)** — a two-service free deployment configuration with automatic API URL wiring and a private MongoDB Atlas connection. The `portfolio-render-deploy` branch contains preliminary hosting fixes and has **not yet** passed a complete live end-to-end test. No Live Demo URL is claimed until the frontend, database, signup, organizer approval, booking, and mock payment flows are verified.
 
 ## Credit and provenance
 
