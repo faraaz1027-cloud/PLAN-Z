@@ -36,9 +36,13 @@ Run `npm run dev` in `server/` and `client/`. The frontend uses `VITE_API_URL` f
 - Do not use development fallback JWT secrets in production.
 - Payment functionality is mocked.
 
-## Free live demo deployment (in progress)
+## Live portfolio demonstration
 
-**[Render + Atlas deployment guide](DEPLOYMENT.md)** and **[Render Blueprint](render.yaml)** — a two-service free deployment configuration with automatic API URL wiring and a private MongoDB Atlas connection. The `portfolio-render-deploy` branch contains preliminary hosting fixes and has **not yet** passed a complete live end-to-end test. No Live Demo URL is claimed until the frontend, database, signup, organizer approval, booking, and mock payment flows are verified.
+**[Open the PLAN-Z demo](https://planz-portfolio-web.onrender.com/)** · **[API health check](https://planz-portfolio-api.onrender.com/healthz)**
+
+The React frontend and Node/Express API are deployed on Render, backed by MongoDB Atlas. The owner has confirmed the PLAN-Z website works and the API health endpoint reports `{"status":"ok"}`. The public hosting configuration lives in [`render.yaml`](render.yaml), with [deployment and security instructions](DEPLOYMENT.md).
+
+**Portfolio/demo only:** Payments are simulated; no money is charged. The free backend can sleep after inactivity. Demo records must be fictitious. End-to-end testing of all roles, administrative approvals and bookings, plus credential rotation and restricted Atlas IP access, should be completed before promoting this beyond a student portfolio.
 
 ## Credit and provenance
 
