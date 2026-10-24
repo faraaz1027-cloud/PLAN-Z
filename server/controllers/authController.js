@@ -27,7 +27,10 @@ const register = async (req, res) => {
     }
 
     // Validate role
-    const allowedRoles = ["attendee", "organizer", "admin"];
+    // Never let anonymous visitors grant themselves administrator privileges.
+    // Admin accounts must be assigned out of band by an existing admin or
+    // created deliberately in the MongoDB database by the demo owner.
+    const allowedRoles = ["attendee", "organizer"];
     const userRole = role || "attendee";
     if (!allowedRoles.includes(userRole)) {
       return res.status(400).json({
