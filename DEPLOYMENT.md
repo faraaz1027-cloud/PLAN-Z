@@ -15,6 +15,31 @@ Render's free API service spins down after 15 minutes without requests and takes
 time to wake. Atlas Free clusters have storage and traffic limits. Do not store
 real customer or financial data in this demonstration.
 
+## Quick setup: Render Blueprint (recommended)
+
+After creating your MongoDB Atlas Free cluster and a **dedicated** database user
+as described below, use the prepared [`render.yaml`](render.yaml) to deploy
+**both** Render services together:
+
+1. Go to **Render Dashboard → New → Blueprint**.
+2. Connect `faraaz1027-cloud/PLAN-Z` from GitHub.
+3. Select branch **`portfolio-render-deploy`**, Blueprint path **`render.yaml`**.
+4. Review the **Free** backend web service and frontend static site. Confirm
+   the plan remains free before applying anything.
+5. When prompted for `MONGO_URI`, enter the **private** Atlas connection
+   string for the `planz` database. Never put it into the GitHub repository.
+6. Select **Deploy Blueprint**. The file generates a JWT secret and connects
+   the two services' actual Render-assigned HTTPS addresses automatically.
+7. Open the API `/healthz` and the frontend; complete the full flow tests below.
+
+This Blueprint has not yet been validated against your Render account or run
+with your Atlas database. If Render reports a schema/permission error, keep the
+original services unchanged, record the exact error, and fix it before merging.
+
+The manual service-by-service procedure below remains an alternative. **Do not
+create both the Blueprint and separate manual copies of the same services**;
+that would duplicate resources and might use extra account allowances.
+
 ## 1. Create MongoDB Atlas free cluster
 
 1. Create an Atlas account at https://cloud.mongodb.com/ and create a **Free** cluster.
