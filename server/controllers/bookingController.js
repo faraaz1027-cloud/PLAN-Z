@@ -35,8 +35,9 @@ const createBooking = async (req, res) => {
     const { eventId, quantity, ticketType = "General Pass", paymentMethod = "mock" } = req.body;
     const requestedQuantity = Number(quantity);
 
-    if (!eventId || !requestedQuantity) return res.status(400).json({ message: "Event ID and quantity are required" });
-    if (requestedQuantity <= 0) return res.status(400).json({ message: "Quantity must be greater than 0" });
+    if (!eventId || !Number.isSafeInteger(requestedQuantity) || requestedQuantity <= 0) {
+      return res.status(400).json({ message: "Event ID and a positive integer quantity are required" });
+    }
 
     let event = await Event.findById(eventId);
     if (!event) return res.status(404).json({ message: "Event not found" });
